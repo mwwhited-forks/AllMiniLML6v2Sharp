@@ -4,8 +4,8 @@ namespace AllMiniLmL6V2Sharp.Tokenizer
 {
     public interface ITokenizer
     {
-        IEnumerable<Token> Tokenize(string text);
-        IEnumerable<EncodedToken> Encode(int sequenceLength, string text);
+        Token[] Tokenize(string text);
+        EncodedToken[] Encode(int sequenceLength, string text);
 
     }
 }

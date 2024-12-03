@@ -1,22 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace AllMiniLmL6V2Sharp
 {
     public interface IEmbedder
     {
         /// <summary>
-        /// Generates an embedding array for the given sentance.
+        /// Generates an embedding array for the given sentence.
         /// </summary>
         /// <param name="sentence">Text to embed.</param>
-        /// <returns>Sentance embeddings</returns>
-        IEnumerable<float> GenerateEmbedding(string sentence);
+        /// <returns>Sentence embeddings</returns>
+        float[] GenerateEmbedding(string sentence);
         /// <summary>
-        /// Generates an embedding array for the given sentances.
+        /// Generates an embedding array for the given sentences.
         /// </summary>
         /// <param name="sentence">Text to embed.</param>
         /// <returns>An enumerable of embeddings.</returns>
-        IEnumerable<IEnumerable<float>> GenerateEmbeddings(IEnumerable<string> sentences);
+        IEnumerable<(string sentence, float[] embedding)> GenerateEmbeddings(IEnumerable<string> sentences);
     }
 }

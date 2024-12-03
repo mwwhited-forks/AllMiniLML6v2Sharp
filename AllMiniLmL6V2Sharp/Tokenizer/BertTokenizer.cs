@@ -21,46 +21,44 @@ namespace AllMiniLmL6V2Sharp.Tokenizer
             _wordpieceTokenizer = new WordpieceTokenizer(_vocab, unknownToken, maxInputCharsPerWord);
         }
 
-        public IEnumerable<Token> Tokenize(string text)
+        public Token[] Tokenize(string text) => TokenizeInternal(text).ToArray();
+
+        private  IEnumerable<Token> TokenizeInternal(string text)
         {
-            List<Token> outputTokens = new List<Token>()
-            {
-                new Token(Tokens.CLS_TOKEN, 0, _vocab[Tokens.CLS_TOKEN])
-            };
+            yield return new Token(Tokens.CLS_TOKEN, 0, _vocab[Tokens.CLS_TOKEN]);
 
             int segmentIndex = 0;
             foreach (string token in _basicTokenizer.Tokenize(text))
             {
-                foreach(string subToken in _wordpieceTokenizer.Tokenize(token))
+                foreach (string subToken in _wordpieceTokenizer.Tokenize(token))
                 {
                     var outputToken = new Token(subToken, segmentIndex, _vocab[subToken]);
-                    outputTokens.Add(outputToken);
+                    yield return outputToken;
 
-                    if(token == Tokens.SEPARATOR_TOKEN)
+                    if (token == Tokens.SEPARATOR_TOKEN)
                     {
                         segmentIndex++;
                     }
                 }
             }
 
-            outputTokens.Add(new Token(Tokens.SEPARATOR_TOKEN, segmentIndex++, _vocab[Tokens.SEPARATOR_TOKEN]));
-
-            return outputTokens;
+            yield return new Token(Tokens.SEPARATOR_TOKEN, segmentIndex++, _vocab[Tokens.SEPARATOR_TOKEN]);
         }
 
-        public IEnumerable<EncodedToken> Encode(int sequenceLength, string text)
+        public EncodedToken[] Encode(int sequenceLength, string text)
         {
-            IEnumerable<Token> tokens = Tokenize(text);
+            var tokens = Tokenize(text);
 
-            if(tokens.Count() > sequenceLength)
+            if(tokens.Length > sequenceLength)
             {
-                tokens = tokens.Take(sequenceLength);
+                tokens = tokens.Take(sequenceLength).ToArray();
             }
 
-            IEnumerable<long> padding = Enumerable.Repeat(0L, sequenceLength - tokens.Count());
+            var padding = Enumerable.Repeat(0L, sequenceLength - tokens.Count());
             return tokens
                 .Select(token => new EncodedToken { InputIds = token.VocabularyIndex, TokenTypeIds = token.SegmentIndex, AttentionMask = 1L })
-                .Concat(padding.Select(p => new EncodedToken { InputIds = p, TokenTypeIds = p, AttentionMask = p }));
+                .Concat(padding.Select(p => new EncodedToken { InputIds = p, TokenTypeIds = p, AttentionMask = p }))
+                .ToArray();
         }
     }
 }

@@ -29,51 +29,51 @@ namespace AllMiniLmL6V2Sharp
         }
 
         /// <summary>
-        /// Generates an embedding array for the given sentance.
+        /// Generates an embedding array for the given sentence.
         /// </summary>
         /// <param name="sentence">Text to embed.</param>
-        /// <returns>Sentance embeddings</returns>
-        public IEnumerable<float> GenerateEmbedding(string sentence)
+        /// <returns>Sentence embeddings</returns>
+        public float[] GenerateEmbedding(string sentence)
         {
             // Tokenize Input
-            IEnumerable<Token> tokens = _tokenizer.Tokenize(sentence);
-            if(_truncate && tokens.Count() > 512)
+            var tokens = _tokenizer.Tokenize(sentence);
+            if (_truncate && tokens.Length > 512)
             {
-                tokens = tokens.Take(512);
+                tokens = tokens.Take(512).ToArray();
             }
 
-            IEnumerable<EncodedToken> encodedTokens = _tokenizer.Encode(tokens.Count(), sentence);
+            var encodedTokens = _tokenizer.Encode(tokens.Length, sentence);
 
             // Compute Token Embeddings
-            BertInput bertInput = new BertInput
+            var bertInput = new BertInput
             {
                 InputIds = encodedTokens.Select(t => t.InputIds).ToArray(),
                 TypeIds = encodedTokens.Select(t => t.TokenTypeIds).ToArray(),
-                AttentionMask = encodedTokens.Select(t => t.AttentionMask).ToArray()
+                AttentionMask = encodedTokens.Select(t => t.AttentionMask).ToArray(),
             };
 
-            using RunOptions runOptions = new RunOptions();
-            using InferenceSession session = new InferenceSession(_modelPath);
+            using var runOptions = new RunOptions();
+            using var session = new InferenceSession(_modelPath);
 
             // Create input tensors over the input data.
-            using OrtValue inputIdsOrtValue = OrtValue.CreateTensorValueFromMemory(bertInput.InputIds,
+            using var inputIdsOrtValue = OrtValue.CreateTensorValueFromMemory(bertInput.InputIds,
                   new long[] { 1, bertInput.InputIds.Length });
 
-            using OrtValue attMaskOrtValue = OrtValue.CreateTensorValueFromMemory(bertInput.AttentionMask,
+            using var attMaskOrtValue = OrtValue.CreateTensorValueFromMemory(bertInput.AttentionMask,
                   new long[] { 1, bertInput.AttentionMask.Length });
 
-            using OrtValue typeIdsOrtValue = OrtValue.CreateTensorValueFromMemory(bertInput.TypeIds,
+            using var typeIdsOrtValue = OrtValue.CreateTensorValueFromMemory(bertInput.TypeIds,
                   new long[] { 1, bertInput.TypeIds.Length });
 
             // Create input data for session. Request all outputs in this case.
-            IReadOnlyDictionary<string, OrtValue> inputs = new Dictionary<string, OrtValue>
+            var inputs = new Dictionary<string, OrtValue>
             {
                 { "input_ids", inputIdsOrtValue },
                 { "attention_mask", attMaskOrtValue },
                 { "token_type_ids", typeIdsOrtValue }
             };
 
-            using IDisposableReadOnlyCollection<OrtValue> output = session.Run(runOptions, inputs, session.OutputNames);
+            using var output = session.Run(runOptions, inputs, session.OutputNames);
 
             // Perform Pooling
             var pooled = SingleMeanPooling(output.First(), attMaskOrtValue);
@@ -86,59 +86,59 @@ namespace AllMiniLmL6V2Sharp
         }
 
         /// <summary>
-        /// Generates an embedding array for the given sentances.
+        /// Generates an embedding array for the given sentences.
         /// </summary>
         /// <param name="sentence">Text to embed.</param>
         /// <returns>An enumerable of embeddings.</returns>
-        public IEnumerable<IEnumerable<float>> GenerateEmbeddings(IEnumerable<string> sentences)
+        public IEnumerable<(string sentence, float[] embedding)> GenerateEmbeddings(IEnumerable<string> sentences)
         {
             // Tokenize Input
-            IEnumerable<IEnumerable<Token>> allTokens = new List<IEnumerable<Token>>();
-            IEnumerable<IEnumerable<EncodedToken>> allEncoded = new List<IEnumerable<EncodedToken>>();
-            
+            var allTokens = new List<IEnumerable<Token>>();
+            var allEncoded = new List<IEnumerable<EncodedToken>>();
+
             foreach (var sentence in sentences)
             {
-                IEnumerable<Token> tokens = _tokenizer.Tokenize(sentence);
+                var tokens = _tokenizer.Tokenize(sentence);
 
-                if(_truncate && tokens.Count() > 512)
+                if (_truncate && tokens.Length > 512)
                 {
-                    tokens = tokens.Take(512);
+                    tokens = tokens.Take(512).ToArray();
                 }
 
-                allTokens = allTokens.Append(tokens);
+                allTokens.Add(tokens);
             }
 
             int maxSequence = allTokens.Max(t => t.Count());
-            
-            foreach(var sentence in sentences)
+
+            foreach (var sentence in sentences)
             {
-                IEnumerable<EncodedToken> encodedTokens = _tokenizer.Encode(maxSequence, sentence);
-                allEncoded = allEncoded.Append(encodedTokens);
+                var encodedTokens = _tokenizer.Encode(maxSequence, sentence);
+                allEncoded.Add(encodedTokens);
             }
 
             // Compute Token Embeddings
-            IEnumerable<BertInput> inputs = allEncoded.Select(e => new BertInput
+            var inputs = allEncoded.Select(e => new BertInput
             {
                 InputIds = e.Select(t => t.InputIds).ToArray(),
                 TypeIds = e.Select(t => t.TokenTypeIds).ToArray(),
                 AttentionMask = e.Select(t => t.AttentionMask).ToArray()
             });
 
-            using RunOptions runOptions = new RunOptions();
-            using InferenceSession session = new InferenceSession(_modelPath);
+            using var runOptions = new RunOptions();
+            using var session = new InferenceSession(_modelPath);
 
             // Create input tensors over the input data.
             var size = inputs.Count();
             var inputIds = inputs.SelectMany(i => i.InputIds).ToArray();
-            using OrtValue inputIdsOrtValue = OrtValue.CreateTensorValueFromMemory(inputIds,
+            using var inputIdsOrtValue = OrtValue.CreateTensorValueFromMemory(inputIds,
                   new long[] { size, maxSequence });
 
             var attentionMask = inputs.SelectMany(i => i.AttentionMask).ToArray();
-            using OrtValue attMaskOrtValue = OrtValue.CreateTensorValueFromMemory(attentionMask,
+            using var attMaskOrtValue = OrtValue.CreateTensorValueFromMemory(attentionMask,
                   new long[] { size, inputs.First().AttentionMask.Length });
 
             var typeIds = inputs.SelectMany(i => i.TypeIds).ToArray();
-            using OrtValue typeIdsOrtValue = OrtValue.CreateTensorValueFromMemory(typeIds,
+            using var typeIdsOrtValue = OrtValue.CreateTensorValueFromMemory(typeIds,
                   new long[] { size, maxSequence });
 
             // Create input data for session. Request all outputs in this case.
@@ -151,24 +151,26 @@ namespace AllMiniLmL6V2Sharp
 
             using IDisposableReadOnlyCollection<OrtValue> output = session.Run(runOptions, ortInputs, session.OutputNames);
 
-            // For now, perform this seperatly for each output value.
-            return MultiplePostProcess(output.First(), attMaskOrtValue);
+            // For now, perform this separately for each output value.
+            var results = MultiplePostProcess(output.First(), attMaskOrtValue);
+            var zipped = sentences.Zip(results, (sentence, result) => (sentence, result));
+            return zipped;
         }
 
         private float[][] MultiplePostProcess(OrtValue modelOutput, OrtValue attentionMask)
         {
-            List<float[]> results = new List<float[]>();
-            float[] output = modelOutput.GetTensorDataAsSpan<float>().ToArray();
-            int[] dimensions = modelOutput.GetTensorTypeAndShape().Shape.Select(s => (int)s).ToArray();
+            var results = new List<float[]>();
+            var output = modelOutput.GetTensorDataAsSpan<float>().ToArray();
+            var dimensions = modelOutput.GetTensorTypeAndShape().Shape.Select(s => (int)s).ToArray();
             dimensions[0] = 1;
             long shape = dimensions[0] * dimensions[1] * dimensions[2];
 
             for (long i = 0; i < output.Length; i += shape)
             {
-                float[] buffer = new float[shape];
+                var buffer = new float[shape];
                 Array.Copy(output, i, buffer, 0, shape);
-                DenseTensor<float> tokenTensor = new DenseTensor<float>(buffer, dimensions);
-                DenseTensor<float> maskTensor = AttentionMaskToTensor(attentionMask);
+                var tokenTensor = new DenseTensor<float>(buffer, dimensions);
+                var maskTensor = AttentionMaskToTensor(attentionMask);
                 var pooled = MeanPooling(tokenTensor, maskTensor);
                 // Normalize Embeddings
                 var normalized = pooled.Normalize(p: 2, dim: 1);
@@ -180,22 +182,22 @@ namespace AllMiniLmL6V2Sharp
 
         private DenseTensor<float> SingleMeanPooling(OrtValue modelOutput, OrtValue attentionMask)
         {
-            DenseTensor<float> tokenTensor = OrtToTensor<float>(modelOutput);
-            DenseTensor<float> maskTensor = AttentionMaskToTensor(attentionMask);
+            var tokenTensor = OrtToTensor<float>(modelOutput);
+            var maskTensor = AttentionMaskToTensor(attentionMask);
             return MeanPooling(tokenTensor, maskTensor);
         }
 
         private static DenseTensor<float> AttentionMaskToTensor(OrtValue attentionMask)
         {
-            DenseTensor<long> maskIntTensor = OrtToTensor<long>(attentionMask);
+            var maskIntTensor = OrtToTensor<long>(attentionMask);
             var maskFloatData = maskIntTensor.Select(x => (float)x).ToArray();
-            DenseTensor<float> maskTensor = new DenseTensor<float>(maskFloatData, maskIntTensor.Dimensions);
+            var maskTensor = new DenseTensor<float>(maskFloatData, maskIntTensor.Dimensions);
             return maskTensor;
         }
 
         private DenseTensor<float> MeanPooling(DenseTensor<float> tokenTensor, DenseTensor<float> maskTensor)
-        { 
-            DenseTensor<float> maskedSum = ApplyMaskAndSum(tokenTensor, maskTensor);
+        {
+            var maskedSum = ApplyMaskAndSum(tokenTensor, maskTensor);
             return maskedSum;
         }
 
@@ -221,7 +223,7 @@ namespace AllMiniLmL6V2Sharp
             var typeAndShape = value.GetTensorTypeAndShape();
             var tokenShape = new ReadOnlySpan<int>(typeAndShape.Shape.Select(s => (int)s).ToArray());
             var tokenEmbeddings = value.GetTensorDataAsSpan<T>();
-            DenseTensor<T> tokenTensor = new DenseTensor<T>(tokenShape);
+            var tokenTensor = new DenseTensor<T>(tokenShape);
             tokenEmbeddings.CopyTo(tokenTensor.Buffer.Span);
             return tokenTensor;
         }
