@@ -1,4 +1,7 @@
+using System.Numerics;
+using System.Numerics.Tensors;
 using Microsoft.ML.OnnxRuntime;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel.Engine.ClientProtocol;
 
 namespace AllMiniLmL6V2Sharp.Tests
 {
@@ -62,9 +65,88 @@ namespace AllMiniLmL6V2Sharp.Tests
 
             foreach (var batchEmbedding in embeddings)
             {
+                Assert.Equal(1, TensorPrimitives.CosineSimilarity(batchEmbedding.ToArray(), embedding.ToArray()));
+
                 Assert.True(batchEmbedding.SequenceEqual(embedding),
                     "Single embedding does not match a batch embedding");
             }
+        }
+
+        [Fact]
+        public void MultipleDifferentTest_FineIfFirst()
+        {
+            var model = new AllMiniLmL6V2Embedder();
+            string sentence = "This is an example sentence";
+            string[] sentences = [sentence, "Some other", sentence, sentence];
+            var embedding = model.GenerateEmbedding(sentence);
+            var embeddings = model.GenerateEmbeddings(sentences);
+            Assert.NotNull(embedding);
+            Assert.NotEmpty(embedding);
+            Assert.NotNull(embeddings);
+            Assert.NotEmpty(embeddings);
+            Assert.Equal(sentences.Length, embeddings.Count());
+
+            // Make sure all embeddings are the same.
+
+            var exp = new List<Exception>();
+
+            foreach (var batchEmbedding in embeddings.Select((value, index) => (value, index)))
+            {
+                try
+                {
+                    Assert.Equal(1, TensorPrimitives.CosineSimilarity(batchEmbedding.value.ToArray(), embedding.ToArray()));
+
+                    Assert.True(batchEmbedding.value.SequenceEqual(embedding),
+                        "Single embedding does not match a batch embedding");
+                }
+                catch (Exception ex)
+                {
+                    if (sentences[batchEmbedding.index] == sentence)
+                        exp.Add(new Exception($"{batchEmbedding.index}", ex));
+                }
+            }
+
+            if (exp.Count > 0)
+                throw new AggregateException(exp);
+        }
+
+        //TODO: this is the one that has an issue... if the value is not the first in the set then the embedding is not calculated correctly
+        [Fact]
+        public void MultipleDifferentTest_NotFineIfOther()
+        {
+            var model = new AllMiniLmL6V2Embedder();
+            string sentence = "This is an example sentence";
+            string[] sentences = [ "Some other", sentence];
+            var embedding = model.GenerateEmbedding(sentence);
+            var embeddings = model.GenerateEmbeddings(sentences);
+            Assert.NotNull(embedding);
+            Assert.NotEmpty(embedding);
+            Assert.NotNull(embeddings);
+            Assert.NotEmpty(embeddings);
+            Assert.Equal(sentences.Length, embeddings.Count());
+
+            // Make sure all embeddings are the same.
+
+            var exp = new List<Exception>();
+
+            foreach (var batchEmbedding in embeddings.Select((value, index) => (value, index)))
+            {
+                try
+                {
+                    Assert.Equal(1, TensorPrimitives.CosineSimilarity(batchEmbedding.value.ToArray(), embedding.ToArray()));
+
+                    Assert.True(batchEmbedding.value.SequenceEqual(embedding),
+                        "Single embedding does not match a batch embedding");
+                }
+                catch (Exception ex)
+                {
+                    if (sentences[batchEmbedding.index] == sentence)
+                        exp.Add(new Exception($"{batchEmbedding.index}", ex));
+                }
+            }
+
+            if (exp.Count > 0)
+                throw new AggregateException(exp);
         }
     }
 }
