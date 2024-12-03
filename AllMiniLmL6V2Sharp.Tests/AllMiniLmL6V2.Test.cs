@@ -47,7 +47,7 @@ namespace AllMiniLmL6V2Sharp.Tests
         {
             var model = new AllMiniLmL6V2Embedder();
             string sentence = "This is an example sentence";
-            string[] sentences = [ sentence, sentence, sentence];
+            string[] sentences = [sentence, sentence, sentence];
             var embedding = model.GenerateEmbedding(sentence);
             var embeddings = model.GenerateEmbeddings(sentences);
             Assert.NotNull(embedding);
@@ -65,6 +65,34 @@ namespace AllMiniLmL6V2Sharp.Tests
                 Assert.True(batchEmbedding.embedding.SequenceEqual(embedding),
                     "Single embedding does not match a batch embedding");
             }
+        }
+
+        [Fact]
+        public async Task TestAnotherWay()
+        {
+            var model = new AllMiniLmL6V2Embedder();
+
+            var sentences = Enumerable.Range(0, 200).Select(i => $"Hello World! {i}").ToArray();
+
+            var tasks = sentences.AsParallel().Select(async sentence =>
+            {
+                await Task.Yield();
+                var embedding = model.GenerateEmbedding(sentence);
+                return (sentence: sentence, embedding: embedding);
+            });
+
+
+            var results = await Task.WhenAll(tasks);
+        }
+
+
+        [Fact]
+        public void LongSequence()
+        {
+            var model = new AllMiniLmL6V2Embedder();
+
+            var sentences = Enumerable.Range(0, 200).Select(i => $"Hello World! {i}").ToArray();
+            var results = model.GenerateEmbeddings(sentences).ToArray();
         }
     }
 }

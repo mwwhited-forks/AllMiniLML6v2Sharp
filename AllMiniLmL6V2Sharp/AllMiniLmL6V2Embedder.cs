@@ -12,9 +12,13 @@ namespace AllMiniLmL6V2Sharp
     /// </summary>
     public class AllMiniLmL6V2Embedder : IEmbedder
     {
+        private readonly RunOptions _runOptions;
+        private readonly InferenceSession _inferenceSession;
+
         private readonly ITokenizer _tokenizer;
         private readonly string _modelPath;
         private readonly bool _truncate;
+
         /// <summary>
         /// Initializes the AllMiniLmL6v2 Embedder
         /// </summary>
@@ -23,6 +27,9 @@ namespace AllMiniLmL6V2Sharp
         /// <param name="truncate">If true, automatically truncates tokens to 512 tokens.</param>
         public AllMiniLmL6V2Embedder(string modelPath = "./model/model.onnx", ITokenizer? tokenizer = null, bool truncate = false)
         {
+            _runOptions = new RunOptions();
+            _inferenceSession = new InferenceSession(modelPath);
+
             _tokenizer = tokenizer ?? new BertTokenizer("./model/vocab.txt");
             _modelPath = modelPath;
             _truncate = truncate;
@@ -52,9 +59,6 @@ namespace AllMiniLmL6V2Sharp
                 AttentionMask = encodedTokens.Select(t => t.AttentionMask).ToArray(),
             };
 
-            using var runOptions = new RunOptions();
-            using var session = new InferenceSession(_modelPath);
-
             // Create input tensors over the input data.
             using var inputIdsOrtValue = OrtValue.CreateTensorValueFromMemory(bertInput.InputIds,
                   new long[] { 1, bertInput.InputIds.Length });
@@ -73,7 +77,7 @@ namespace AllMiniLmL6V2Sharp
                 { "token_type_ids", typeIdsOrtValue }
             };
 
-            using var output = session.Run(runOptions, inputs, session.OutputNames);
+            using var output = _inferenceSession.Run(_runOptions, inputs, _inferenceSession.OutputNames);
 
             // Perform Pooling
             var pooled = SingleMeanPooling(output.First(), attMaskOrtValue);
@@ -124,9 +128,6 @@ namespace AllMiniLmL6V2Sharp
                 AttentionMask = e.Select(t => t.AttentionMask).ToArray()
             });
 
-            using var runOptions = new RunOptions();
-            using var session = new InferenceSession(_modelPath);
-
             // Create input tensors over the input data.
             var size = inputs.Count();
             var inputIds = inputs.SelectMany(i => i.InputIds).ToArray();
@@ -142,14 +143,14 @@ namespace AllMiniLmL6V2Sharp
                   new long[] { size, maxSequence });
 
             // Create input data for session. Request all outputs in this case.
-            IReadOnlyDictionary<string, OrtValue> ortInputs = new Dictionary<string, OrtValue>
+            var ortInputs = new Dictionary<string, OrtValue>
             {
                 { "input_ids", inputIdsOrtValue },
                 { "attention_mask", attMaskOrtValue },
                 { "token_type_ids", typeIdsOrtValue }
             };
 
-            using IDisposableReadOnlyCollection<OrtValue> output = session.Run(runOptions, ortInputs, session.OutputNames);
+            using var output = _inferenceSession.Run(_runOptions, ortInputs, _inferenceSession.OutputNames);
 
             // For now, perform this separately for each output value.
             var results = MultiplePostProcess(output.First(), attMaskOrtValue);
