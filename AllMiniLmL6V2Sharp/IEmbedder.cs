@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace AllMiniLmL6V2Sharp
 {
@@ -18,5 +16,12 @@ namespace AllMiniLmL6V2Sharp
         /// <param name="sentence">Text to embed.</param>
         /// <returns>An enumerable of embeddings.</returns>
         IEnumerable<IEnumerable<float>> GenerateEmbeddings(IEnumerable<string> sentences);
+
+        /// <summary>
+        /// Generates an embedding array for the given sentences.
+        /// </summary>
+        /// <param name="sentence">Text to embed.</param>
+        /// <returns>An enumerable of embeddings.</returns>
+        IAsyncEnumerable<(string sentence, float[] embedding)> GenerateEmbeddingsAsync(IEnumerable<string> sentences);
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Numerics.Tensors;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Numerics.Tensors;
 using Microsoft.ML.OnnxRuntime;
 
 namespace AllMiniLmL6V2Sharp.Tests
@@ -91,7 +92,7 @@ namespace AllMiniLmL6V2Sharp.Tests
         [Fact]
         public async Task BigTest()
         {
-            using var model = new CachedAllMiniLmL6V2Embedder();
+            var model = new CachedAllMiniLmL6V2Embedder();
 
             var inputs = Enumerable.Range(0, 200).Select(i => Guid.NewGuid().ToString());
 
@@ -103,6 +104,40 @@ namespace AllMiniLmL6V2Sharp.Tests
             });
 
             var results = await Task.WhenAll(tasks);
+        }
+
+        [Fact]
+        public async Task BigTest2()
+        {
+            var model = new CachedAllMiniLmL6V2Embedder();
+
+            var inputs = Enumerable.Range(0, 200).Select(i => Guid.NewGuid().ToString());
+
+            var tasks = model.GenerateEmbeddings(inputs).ToArray();
+        }
+
+
+        [Fact]
+        public async Task BigTest3()
+        {
+            var model = new CachedAllMiniLmL6V2Embedder();
+
+            var inputs = Enumerable.Range(0, 200).Select(i => Guid.NewGuid().ToString());
+
+            var embedding = await model.GenerateEmbeddingsAsync(inputs).ToArrayAsync();
+        }
+    }
+
+    public static class AsyncEnumerableExtensions
+    {
+        public static async Task<IEnumerable<T>> ToArrayAsync<T>(this IAsyncEnumerable<T> input)
+        {
+            var results = new List<T>();
+            await foreach(var item in input)
+            {
+                results.Add(item);
+            }
+            return results;
         }
     }
 }

@@ -4,10 +4,11 @@ using Microsoft.ML.OnnxRuntime;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using System.Threading.Tasks;
 
 namespace AllMiniLmL6V2Sharp
 {
-    public class CachedAllMiniLmL6V2Embedder : IDisposable
+    public class CachedAllMiniLmL6V2Embedder : IEmbedder, IDisposable
     {
         private readonly RunOptions _runOptions;
         private readonly InferenceSession _session;
@@ -93,11 +94,31 @@ namespace AllMiniLmL6V2Sharp
         public IEnumerable<IEnumerable<float>> GenerateEmbeddings(IEnumerable<string> sentences) =>
             GenerateEmbeddingsInternal(sentences).ToArray();
 
+
+        public async IAsyncEnumerable<(string sentence, float[] embedding)> GenerateEmbeddingsAsync(IEnumerable<string> sentences)
+        {
+            var tasks = sentences.AsParallel()
+                    .WithExecutionMode(ParallelExecutionMode.ForceParallelism)
+                    .Select(async sentence =>
+                    {
+                        var embedding = this.GenerateEmbedding(sentence).ToArray();
+                        await Task.Yield();
+                        return (sentence, embedding);
+                    });
+
+            var embeddings = await Task.WhenAll(tasks);
+
+            foreach (var embedding in embeddings)
+            {
+                yield return embedding;
+            }
+        }
+
         private IEnumerable<IEnumerable<float>> GenerateEmbeddingsInternal(IEnumerable<string> sentences)
         {
             foreach (var sentence in sentences)
             {
-                yield return GenerateEmbedding(sentence);
+                yield return GenerateEmbedding(sentence).ToArray();
             }
         }
 
@@ -154,5 +175,6 @@ namespace AllMiniLmL6V2Sharp
             _runOptions.Dispose();
             _session.Dispose();
         }
+
     }
 }
