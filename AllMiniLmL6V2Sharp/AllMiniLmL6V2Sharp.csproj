@@ -31,38 +31,13 @@
 
   <ItemGroup>
     <PackageReference Include="libtorch-cpu-win-x64" Version="2.5.1" />
-    <PackageReference Include="Microsoft.ML" Version="4.0.1" />
+    <PackageReference Include="Microsoft.ML" Version="4.0.2" />
     <PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.20.1" />
     <PackageReference Include="Microsoft.ML.OnnxRuntime.Managed" Version="1.20.2" />
+    <PackageReference Include="GitVersion.MsBuild" Version="6.1.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
-
-  <!--
-  <ItemGroup>
-    <None Update="all-MiniLm-L6-v2\config.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="all-MiniLm-L6-v2\model.onnx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="all-MiniLm-L6-v2\special_tokens_map.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="all-MiniLm-L6-v2\tokenizer.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="all-MiniLm-L6-v2\tokenizer_config.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="all-MiniLm-L6-v2\vocab.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="model\model.onnx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="model\vocab.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  -->
 
 </Project>
