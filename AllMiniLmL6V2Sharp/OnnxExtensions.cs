@@ -96,7 +96,7 @@ public static class OnnxExtensions
     private static DenseTensor<float> SumAlongDimension(DenseTensor<float> inputTensor, int dim, bool keepdim)
     {
         int[] dimensions = inputTensor.Dimensions.ToArray();
-        int[] outputShape = keepdim ? dimensions : dimensions.Select((index, idx) => dim == idx ? -1 : index).Where(x => x != -1).ToArray();
+        int[] outputShape = keepdim ? dimensions : [.. dimensions.Select((index, idx) => dim == idx ? -1 : index).Where(x => x != -1)];
         float[] result = new float[outputShape.Aggregate((a, b) => a * b)];
 
         SumAlongDimensionRecursive(inputTensor, dim, keepdim, dimensions, result, new int[dimensions.Length], 0);
@@ -109,10 +109,10 @@ public static class OnnxExtensions
         if (depth == dimensions.Length)
         {
             float element = (float)inputTensor.GetValue(GetFlattenedIndex(indices, dimensions));
-            int[] reducedIndices = indices.Select((index, idx) => dim == idx ? 0 : index).ToArray();
+            int[] reducedIndices = [.. indices.Select((index, idx) => dim == idx ? 0 : index)];
             int[] outputIndices = keepdim
                 ? reducedIndices
-                : reducedIndices.Where((index, idx) => dimensions[idx] != 1).ToArray();
+                : [.. reducedIndices.Where((index, idx) => dimensions[idx] != 1)];
             int resultIndex = GetFlattenedIndex(outputIndices, dimensions);
             result[resultIndex] = result[resultIndex] +  element;
         }

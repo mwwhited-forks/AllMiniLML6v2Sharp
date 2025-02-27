@@ -53,9 +53,9 @@ namespace AllMiniLmL6V2Sharp
             // Compute Token Embeddings
             BertInput bertInput = new BertInput
             {
-                InputIds = encodedTokens.Select(t => t.InputIds).ToArray(),
-                TypeIds = encodedTokens.Select(t => t.TokenTypeIds).ToArray(),
-                AttentionMask = encodedTokens.Select(t => t.AttentionMask).ToArray()
+                InputIds = [.. encodedTokens.Select(t => t.InputIds)],
+                TypeIds = [.. encodedTokens.Select(t => t.TokenTypeIds)],
+                AttentionMask = [.. encodedTokens.Select(t => t.AttentionMask)]
             };
 
             // Create input tensors over the input data.
@@ -122,9 +122,9 @@ namespace AllMiniLmL6V2Sharp
             // Compute Token Embeddings
             IEnumerable<BertInput> inputs = allEncoded.Select(e => new BertInput
             {
-                InputIds = e.Select(t => t.InputIds).ToArray(),
-                TypeIds = e.Select(t => t.TokenTypeIds).ToArray(),
-                AttentionMask = e.Select(t => t.AttentionMask).ToArray()
+                InputIds = [.. e.Select(t => t.InputIds)],
+                TypeIds = [.. e.Select(t => t.TokenTypeIds)],
+                AttentionMask = [.. e.Select(t => t.AttentionMask)]
             });
 
             // Create input tensors over the input data.
@@ -159,12 +159,12 @@ namespace AllMiniLmL6V2Sharp
         {
             List<float[]> results = new List<float[]>();
             float[] output = modelOutput.GetTensorDataAsSpan<float>().ToArray();
-            int[] dimensions = modelOutput.GetTensorTypeAndShape().Shape.Select(s => (int)s).ToArray();
+            int[] dimensions = [.. modelOutput.GetTensorTypeAndShape().Shape.Select(s => (int)s)];
             dimensions[0] = 1; // Since only processing 1 row at a time, set to 1. 
             long shape = dimensions[0] * dimensions[1] * dimensions[2];
 
             long[] mask = attentionMask.GetTensorDataAsSpan<long>().ToArray();
-            int[] maskDimensions = attentionMask.GetTensorTypeAndShape().Shape.Select(s => (int)s).ToArray();
+            int[] maskDimensions = [.. attentionMask.GetTensorTypeAndShape().Shape.Select(s => (int)s)];
             maskDimensions[0] = 1; // Since only processing 1 row at a time, set to 1. 
             long maskShape = maskDimensions[0] * maskDimensions[1];
             int indicies = (int)Math.Floor((double)output.Length / (double)shape);
@@ -185,10 +185,10 @@ namespace AllMiniLmL6V2Sharp
                 var pooled = MeanPooling(tokenTensor, maskTensor);
                 // Normalize Embeddings
                 var normalized = pooled.Normalize(p: 2, dim: 1);
-                results.Add(normalized.ToArray());
+                results.Add([.. normalized]);
             }
 
-            return results.ToArray();
+            return [.. results];
         }
 
         private DenseTensor<float> SingleMeanPooling(OrtValue modelOutput, OrtValue attentionMask)
@@ -232,7 +232,7 @@ namespace AllMiniLmL6V2Sharp
         private static DenseTensor<T> OrtToTensor<T>(OrtValue value) where T : unmanaged
         {
             var typeAndShape = value.GetTensorTypeAndShape();
-            var tokenShape = new ReadOnlySpan<int>(typeAndShape.Shape.Select(s => (int)s).ToArray());
+            var tokenShape = new ReadOnlySpan<int>([.. typeAndShape.Shape.Select(s => (int)s)]);
             var tokenEmbeddings = value.GetTensorDataAsSpan<T>();
             DenseTensor<T> tokenTensor = new DenseTensor<T>(tokenShape);
             tokenEmbeddings.CopyTo(tokenTensor.Buffer.Span);

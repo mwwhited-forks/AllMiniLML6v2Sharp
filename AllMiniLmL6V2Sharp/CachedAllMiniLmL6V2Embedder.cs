@@ -60,9 +60,9 @@ public class CachedAllMiniLmL6V2Embedder : IEmbedder, IDisposable
         // Compute Token Embeddings
         var bertInput = new BertInput
         {
-            InputIds = encodedTokens.Select(t => t.InputIds).ToArray(),
-            TypeIds = encodedTokens.Select(t => t.TokenTypeIds).ToArray(),
-            AttentionMask = encodedTokens.Select(t => t.AttentionMask).ToArray()
+            InputIds = [.. encodedTokens.Select(t => t.InputIds)],
+            TypeIds = [.. encodedTokens.Select(t => t.TokenTypeIds)],
+            AttentionMask = [.. encodedTokens.Select(t => t.AttentionMask)]
         };
 
         // Create input tensors over the input data.
@@ -171,7 +171,7 @@ public class CachedAllMiniLmL6V2Embedder : IEmbedder, IDisposable
     private static DenseTensor<T> OrtToTensor<T>(OrtValue value) where T : unmanaged
     {
         var typeAndShape = value.GetTensorTypeAndShape();
-        var tokenShape = new ReadOnlySpan<int>(typeAndShape.Shape.Select(s => (int)s).ToArray());
+        var tokenShape = new ReadOnlySpan<int>([.. typeAndShape.Shape.Select(s => (int)s)]);
         var tokenEmbeddings = value.GetTensorDataAsSpan<T>();
         var tokenTensor = new DenseTensor<T>(tokenShape);
         tokenEmbeddings.CopyTo(tokenTensor.Buffer.Span);
