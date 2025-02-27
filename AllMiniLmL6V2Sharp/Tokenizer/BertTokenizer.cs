@@ -25,7 +25,7 @@ namespace AllMiniLmL6V2Sharp.Tokenizer
         {
             List<Token> outputTokens = new List<Token>()
             {
-                new Token(Tokens.CLS_TOKEN, 0, _vocab[Tokens.CLS_TOKEN])
+                new(Tokens.CLS_TOKEN, 0, _vocab[Tokens.CLS_TOKEN])
             };
 
             int segmentIndex = 0;

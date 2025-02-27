@@ -134,14 +134,7 @@ public static class OnnxExtensions
             sumResult[0] += input.Buffer.Span[i];
         }
 
-        if (keepdim)
-        {
-            return new DenseTensor<float>(sumResult, new int[] { 1 });
-        }
-        else
-        {
-            return new DenseTensor<float>(sumResult, new int[] { });
-        }
+        return keepdim ? new DenseTensor<float>(sumResult, new int[] { 1 }) : new DenseTensor<float>(sumResult, new int[] { });
     }
 
     private static int GetFlattenedIndex(int[] indices, int[] dimensions)

@@ -150,12 +150,7 @@ namespace AllMiniLmL6V2Sharp.Tokenizer
             }
 
             UnicodeCategory category = CharUnicodeInfo.GetUnicodeCategory(c);
-            if (category == UnicodeCategory.Control || category == UnicodeCategory.Format)
-            {
-                return true;
-            }
-
-            return false;
+            return category == UnicodeCategory.Control || category == UnicodeCategory.Format;
         }
 
         private bool IsPunctuation(char c)
@@ -165,12 +160,10 @@ namespace AllMiniLmL6V2Sharp.Tokenizer
             // Punctuation class but we treat them as punctuation anyways, for
             // consistency.
             int charValue = CharUnicodeInfo.GetDigitValue(c);
-            if ((charValue >= 33 && charValue <= 47) || (charValue >= 58 && charValue <= 64) ||
-                    (charValue >= 91 && charValue <= 96) || (charValue >= 123 && charValue <= 126)) {
-                return true;
-            }
-
-            return char.IsPunctuation(c);   
+            return (charValue >= 33 && charValue <= 47) || (charValue >= 58 && charValue <= 64) ||
+                    (charValue >= 91 && charValue <= 96) || (charValue >= 123 && charValue <= 126)
+                ? true
+                : char.IsPunctuation(c);
         }
     }
 }
