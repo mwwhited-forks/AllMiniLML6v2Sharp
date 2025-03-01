@@ -161,9 +161,7 @@ namespace AllMiniLmL6V2Sharp.Tokenizer
             // consistency.
             int charValue = CharUnicodeInfo.GetDigitValue(c);
             return (charValue >= 33 && charValue <= 47) || (charValue >= 58 && charValue <= 64) ||
-                    (charValue >= 91 && charValue <= 96) || (charValue >= 123 && charValue <= 126)
-                ? true
-                : char.IsPunctuation(c);
+                    (charValue >= 91 && charValue <= 96) || (charValue >= 123 && charValue <= 126) || char.IsPunctuation(c);
         }
     }
 }

@@ -1,4 +1,4 @@
-using Microsoft.ML.OnnxRuntime;
+﻿using Microsoft.ML.OnnxRuntime;
 
 namespace AllMiniLmL6V2Sharp.Tests
 {
@@ -79,7 +79,6 @@ namespace AllMiniLmL6V2Sharp.Tests
             Assert.NotNull(embeddings);
             Assert.NotEmpty(embeddings);
             Assert.Equal(sentences.Length, embeddings.Count());
-
 
             for (int i = 0; i < sentences.Length; i++)
             {

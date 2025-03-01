@@ -53,7 +53,6 @@ namespace AllMiniLmL6V2Sharp.Tests
 
             DenseTensor<float> result = x.ElementWiseMultiply(y);
 
-
             DenseTensor<float> expectedTensor = new(new float[] { 5, 12, 21, 32 }, dims);
             Assert.True(expectedTensor.Dimensions.SequenceEqual(result.Dimensions));
             Assert.True(result.SequenceEqual(expectedTensor));  
@@ -67,7 +66,6 @@ namespace AllMiniLmL6V2Sharp.Tests
             DenseTensor<float> y = new(new float[] { 5, 6, 7, 8 }, dims);
 
             DenseTensor<float> result = x.ElementWiseDivide(y);
-
 
             DenseTensor<float> expectedTensor = new(new float[] { 0.2000f, 0.33333334f, 0.42857143f, 0.5000f }, dims);
             Assert.True(expectedTensor.Dimensions.SequenceEqual(result.Dimensions));
