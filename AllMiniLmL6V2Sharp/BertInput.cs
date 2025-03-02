@@ -1,9 +1,8 @@
-﻿namespace AllMiniLmL6V2Sharp
+﻿namespace AllMiniLmL6V2Sharp;
+
+internal struct BertInput
 {
-    internal struct BertInput
-    {
-        public long[] InputIds { get; set; }
-        public long[] AttentionMask { get; set; }
-        public long[] TypeIds { get; set; }
-    }
+    public long[] InputIds { get; set; }
+    public long[] AttentionMask { get; set; }
+    public long[] TypeIds { get; set; }
 }
