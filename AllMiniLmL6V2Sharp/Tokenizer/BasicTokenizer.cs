@@ -84,14 +84,14 @@ internal class BasicTokenizer : BaseTokenizer
 
     private bool IsChineseChar(int charValue)
     {
-        return ((charValue >= 0x4E00 && charValue <= 0x9FFF) ||
-                    (charValue >= 0x3400 && charValue <= 0x4DBF) ||
-                    (charValue >= 0x20000 && charValue <= 0x2A6DF) ||
-                    (charValue >= 0x2A700 && charValue <= 0x2B73F) ||
-                    (charValue >= 0x2B740 && charValue <= 0x2B81F) ||
-                    (charValue >= 0x2B820 && charValue <= 0x2CEAF) ||
-                    (charValue >= 0xF900 && charValue <= 0xFAFF) ||
-                    (charValue >= 0x2F800 && charValue <= 0x2FA1F));
+        return charValue >= 0x4E00 && charValue <= 0x9FFF ||
+                    charValue >= 0x3400 && charValue <= 0x4DBF ||
+                    charValue >= 0x20000 && charValue <= 0x2A6DF ||
+                    charValue >= 0x2A700 && charValue <= 0x2B73F ||
+                    charValue >= 0x2B740 && charValue <= 0x2B81F ||
+                    charValue >= 0x2B820 && charValue <= 0x2CEAF ||
+                    charValue >= 0xF900 && charValue <= 0xFAFF ||
+                    charValue >= 0x2F800 && charValue <= 0x2FA1F;
     }
 
     private string RunStripAccents(string text)
@@ -160,7 +160,7 @@ internal class BasicTokenizer : BaseTokenizer
         // Punctuation class but we treat them as punctuation anyways, for
         // consistency.
         int charValue = CharUnicodeInfo.GetDigitValue(c);
-        return (charValue >= 33 && charValue <= 47) || (charValue >= 58 && charValue <= 64) ||
-                (charValue >= 91 && charValue <= 96) || (charValue >= 123 && charValue <= 126) || char.IsPunctuation(c);
+        return charValue >= 33 && charValue <= 47 || charValue >= 58 && charValue <= 64 ||
+                charValue >= 91 && charValue <= 96 || charValue >= 123 && charValue <= 126 || char.IsPunctuation(c);
     }
 }
