@@ -30,6 +30,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="GitVersion.MsBuild" Version="6.3.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="libtorch-cpu-win-x64" Version="2.5.1" />
     <PackageReference Include="Microsoft.ML" Version="4.0.2" />
     <PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.22.1" />
