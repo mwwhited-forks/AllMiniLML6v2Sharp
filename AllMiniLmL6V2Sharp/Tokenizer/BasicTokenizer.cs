@@ -15,16 +15,16 @@ internal class BasicTokenizer : BaseTokenizer
 
     public override IEnumerable<string> Tokenize(string text)
     {
-        string cleanedText = CleanText(text);
-        string cleanedChineseText = TokenizeChineseChars(cleanedText);
+        var cleanedText = CleanText(text);
+        var cleanedChineseText = TokenizeChineseChars(cleanedText);
         IEnumerable<string> cleanedWhitespace = WhitespaceTokenize(cleanedChineseText);
         List<string> splitTokens = new List<string>();
-        foreach (string word in cleanedWhitespace)
+        foreach (var word in cleanedWhitespace)
         {
-            string token = word;
+            var token = word;
             if (IsLowerCase)
             {
-                string lower = token.ToLower();
+                var lower = token.ToLower();
                 token = RunStripAccents(lower);
             }
 
@@ -40,9 +40,9 @@ internal class BasicTokenizer : BaseTokenizer
     private string CleanText(string text)
     {
         StringBuilder output = new StringBuilder();
-        foreach (char c in text)
+        foreach (var c in text)
         {
-            int charValue = CharUnicodeInfo.GetDigitValue(c);
+            var charValue = CharUnicodeInfo.GetDigitValue(c);
             if (charValue == 0 || charValue == 0xfffd || IsControl(c))
             {
                 continue;
@@ -64,9 +64,9 @@ internal class BasicTokenizer : BaseTokenizer
     private string TokenizeChineseChars(string text)
     {
         StringBuilder output = new StringBuilder();
-        foreach (char c in text)
+        foreach (var c in text)
         {
-            int charValue = CharUnicodeInfo.GetDigitValue(c);
+            var charValue = CharUnicodeInfo.GetDigitValue(c);
             if (IsChineseChar(charValue))
             {
                 output.Append(' ');
@@ -96,9 +96,9 @@ internal class BasicTokenizer : BaseTokenizer
 
     private string RunStripAccents(string text)
     {
-        string normalized = text.Normalize();
+        var normalized = text.Normalize();
         StringBuilder output = new StringBuilder();
-        foreach(char c in normalized)
+        foreach(var c in normalized)
         {
             UnicodeCategory cat = CharUnicodeInfo.GetUnicodeCategory(c);
             if(cat == UnicodeCategory.NonSpacingMark)
@@ -114,12 +114,12 @@ internal class BasicTokenizer : BaseTokenizer
 
     private IEnumerable<string> RunSplitOnPunc(string text)
     {
-        int i = 0;
-        bool isStartOfNewWord = true;
+        var i = 0;
+        var isStartOfNewWord = true;
         List<StringBuilder> output = new List<StringBuilder>();
         while(i < text.Length)
         {
-            char c = text[i];
+            var c = text[i];
             if(IsPunctuation(c))
             {
                 output.Add(new StringBuilder().Append(c));
@@ -159,7 +159,7 @@ internal class BasicTokenizer : BaseTokenizer
         // Characters such as "^", "$", and "`" are not in the Unicode
         // Punctuation class but we treat them as punctuation anyways, for
         // consistency.
-        int charValue = CharUnicodeInfo.GetDigitValue(c);
+        var charValue = CharUnicodeInfo.GetDigitValue(c);
         return charValue >= 33 && charValue <= 47 || charValue >= 58 && charValue <= 64 ||
                 charValue >= 91 && charValue <= 96 || charValue >= 123 && charValue <= 126 || char.IsPunctuation(c);
     }

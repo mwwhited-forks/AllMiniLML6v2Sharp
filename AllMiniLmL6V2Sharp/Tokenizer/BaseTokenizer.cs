@@ -7,7 +7,7 @@ internal abstract class BaseTokenizer
     public abstract IEnumerable<string> Tokenize(string text);
     protected IEnumerable<string> WhitespaceTokenize(string text)
     {
-        string strippedText = text.Trim();
+        var strippedText = text.Trim();
         if (string.IsNullOrEmpty(strippedText))
         {
             return new List<string>();

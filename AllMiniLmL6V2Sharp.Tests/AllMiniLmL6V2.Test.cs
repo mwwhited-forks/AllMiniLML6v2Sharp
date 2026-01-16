@@ -46,7 +46,7 @@ public class AllMiniLmL6V2Tests
     public void MultipleSameTest()
     {
         var model = new AllMiniLmL6V2Embedder();
-        string sentence = "This is an example sentence";
+        var sentence = "This is an example sentence";
         string[] sentences = [sentence, sentence, sentence];
         var embedding = model.GenerateEmbedding(sentence);
         var embeddings = model.GenerateEmbeddings(sentences);
@@ -70,7 +70,7 @@ public class AllMiniLmL6V2Tests
     public void MultipleSamev2Test()
     {
         using var model = new AllMiniLmL6V2Embedder();
-        string sentence = "This is an example sentence";
+        var sentence = "This is an example sentence";
         string[] sentences = ["not it", sentence, "another", sentence];
         var embedding = model.GenerateEmbedding(sentence);
         var embeddings = model.GenerateEmbeddings(sentences);
@@ -80,7 +80,7 @@ public class AllMiniLmL6V2Tests
         Assert.NotEmpty(embeddings);
         Assert.Equal(sentences.Length, embeddings.Count());
 
-        for (int i = 0; i < sentences.Length; i++)
+        for (var i = 0; i < sentences.Length; i++)
         {
             var batch = embeddings.ElementAt(i);
             if(i == 0 || i == 2)
