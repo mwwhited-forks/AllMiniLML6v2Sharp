@@ -19,7 +19,7 @@ internal class WordpieceTokenizer : BaseTokenizer
     public override IEnumerable<string> Tokenize(string text)
     {
         List<string> output = new List<string>();
-        foreach(string token in WhitespaceTokenize(text))
+        foreach(var token in WhitespaceTokenize(text))
         {
             if (token.Length > _maxInputCharsPerWord)
             {
@@ -27,16 +27,16 @@ internal class WordpieceTokenizer : BaseTokenizer
                 continue;
             }
 
-            bool isBad = false;
-            int start = 0;
+            var isBad = false;
+            var start = 0;
             List<string> subTokens = new List<string>();
             while(start < token.Length)
             {
-                int end = token.Length;
+                var end = token.Length;
                 string? currentSubstring = null;
                 while(start < end)
                 {
-                    string substring = string.Join("", token.Skip(start).Take(end - start));
+                    var substring = string.Join("", token.Skip(start).Take(end - start));
                     if(start > 0)
                     {
                         substring = "##" + substring;

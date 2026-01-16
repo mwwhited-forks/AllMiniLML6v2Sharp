@@ -28,10 +28,10 @@ public class BertTokenizer : ITokenizer
             new(Tokens.CLS_TOKEN, 0, _vocab[Tokens.CLS_TOKEN])
         };
 
-        int segmentIndex = 0;
-        foreach (string token in _basicTokenizer.Tokenize(text))
+        var segmentIndex = 0;
+        foreach (var token in _basicTokenizer.Tokenize(text))
         {
-            foreach(string subToken in _wordpieceTokenizer.Tokenize(token))
+            foreach(var subToken in _wordpieceTokenizer.Tokenize(token))
             {
                 var outputToken = new Token(subToken, segmentIndex, _vocab[subToken]);
                 outputTokens.Add(outputToken);
