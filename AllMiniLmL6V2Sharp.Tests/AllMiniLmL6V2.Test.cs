@@ -1,6 +1,6 @@
 ﻿using Microsoft.ML.OnnxRuntime;
 
-namespace AllMiniLmL6V2Sharp.Tests;
+namespace OoBDev.AllMiniLmL6V2Sharp.Tests;
 
 public class AllMiniLmL6V2Tests
 {

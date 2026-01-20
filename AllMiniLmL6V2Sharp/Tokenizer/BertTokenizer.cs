@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace AllMiniLmL6V2Sharp.Tokenizer;
+namespace OoBDev.AllMiniLmL6V2Sharp.Tokenizer;
 
 public class BertTokenizer : ITokenizer
 {

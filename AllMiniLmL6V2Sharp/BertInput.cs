@@ -1,4 +1,4 @@
-﻿namespace AllMiniLmL6V2Sharp;
+﻿namespace OoBDev.AllMiniLmL6V2Sharp;
 
 internal struct BertInput
 {

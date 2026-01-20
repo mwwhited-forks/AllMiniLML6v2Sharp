@@ -17,6 +17,7 @@
     <IsPackable>false</IsPackable>
 
     <AssemblyName>OoBDev.$(MSBuildProjectName)</AssemblyName>
+    <RootNamespace>OoBDev.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

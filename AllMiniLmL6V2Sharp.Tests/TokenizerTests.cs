@@ -1,6 +1,6 @@
-﻿using AllMiniLmL6V2Sharp.Tokenizer;
+﻿using OoBDev.AllMiniLmL6V2Sharp.Tokenizer;
 
-namespace AllMiniLmL6V2Sharp.Tests;
+namespace OoBDev.AllMiniLmL6V2Sharp.Tests;
 
 public class TokenizerTests
 {

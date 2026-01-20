@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace AllMiniLmL6V2Sharp;
+namespace OoBDev.AllMiniLmL6V2Sharp;
 
 public interface IEmbedder
 {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace AllMiniLmL6V2Sharp.Tokenizer;
+namespace OoBDev.AllMiniLmL6V2Sharp.Tokenizer;
 
 public interface ITokenizer
 {

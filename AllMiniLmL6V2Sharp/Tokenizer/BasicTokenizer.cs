@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 
-namespace AllMiniLmL6V2Sharp.Tokenizer;
+namespace OoBDev.AllMiniLmL6V2Sharp.Tokenizer;
 
 internal class BasicTokenizer : BaseTokenizer
 {

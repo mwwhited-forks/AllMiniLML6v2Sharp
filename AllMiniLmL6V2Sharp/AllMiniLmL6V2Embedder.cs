@@ -1,11 +1,11 @@
-﻿using AllMiniLmL6V2Sharp.Tokenizer;
-using Microsoft.ML.OnnxRuntime;
+﻿using Microsoft.ML.OnnxRuntime;
 using Microsoft.ML.OnnxRuntime.Tensors;
+using OoBDev.AllMiniLmL6V2Sharp.Tokenizer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace AllMiniLmL6V2Sharp;
+namespace OoBDev.AllMiniLmL6V2Sharp;
 
 /// <summary>
 /// Generate Embeddings via All-MiniLM-L6-v2

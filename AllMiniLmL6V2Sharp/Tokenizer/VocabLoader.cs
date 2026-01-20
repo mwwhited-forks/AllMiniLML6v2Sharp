@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 
-namespace AllMiniLmL6V2Sharp.Tokenizer;
+namespace OoBDev.AllMiniLmL6V2Sharp.Tokenizer;
 
 public class VocabLoader
 {

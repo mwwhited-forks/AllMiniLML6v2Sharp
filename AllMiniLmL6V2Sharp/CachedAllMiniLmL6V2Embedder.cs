@@ -1,13 +1,13 @@
-﻿using AllMiniLmL6V2Sharp.Tokenizer;
-using Microsoft.ML.OnnxRuntime.Tensors;
+﻿using Microsoft.ML.OnnxRuntime.Tensors;
 using Microsoft.ML.OnnxRuntime;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.IO;
+using OoBDev.AllMiniLmL6V2Sharp.Tokenizer;
 
-namespace AllMiniLmL6V2Sharp;
+namespace OoBDev.AllMiniLmL6V2Sharp;
 
 public class CachedAllMiniLmL6V2Embedder : IEmbedder, IDisposable
 {
