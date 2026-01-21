@@ -2,8 +2,18 @@
 using System;
 using System.Linq;
 
+/// <summary>
+/// Extension methods for ONNX tensor operations.
+/// </summary>
 public static class OnnxExtensions
 {
+    /// <summary>
+    /// Inserts a new axis of size 1 at the specified position.
+    /// </summary>
+    /// <typeparam name="T">The tensor element type.</typeparam>
+    /// <param name="tensor">The input tensor.</param>
+    /// <param name="axis">The axis position to insert the new dimension.</param>
+    /// <returns>A new tensor with an additional dimension of size 1.</returns>
     public static DenseTensor<T> Unsqueeze<T>(this DenseTensor<T> tensor, int axis)
     {
         var originalShape = tensor.Dimensions;
@@ -18,6 +28,13 @@ public static class OnnxExtensions
         return unsqueezedTensor;
     }
 
+    /// <summary>
+    /// Expands the input tensor to a new shape by broadcasting dimensions.
+    /// </summary>
+    /// <typeparam name="T">The tensor element type.</typeparam>
+    /// <param name="input">The input tensor.</param>
+    /// <param name="newShape">The target shape for expansion.</param>
+    /// <returns>A new tensor with the expanded shape.</returns>
     public static DenseTensor<T> Expand<T>(this DenseTensor<T> input, int[] newShape)
     {
         var inputData = input.ToArray();
@@ -67,6 +84,12 @@ public static class OnnxExtensions
         return new DenseTensor<T>(expandedData, newShape.ToArray());
     }
 
+    /// <summary>
+    /// Performs element-wise multiplication of two tensors.
+    /// </summary>
+    /// <param name="tensor1">The first tensor.</param>
+    /// <param name="tensor2">The second tensor.</param>
+    /// <returns>A new tensor containing the element-wise product.</returns>
     public static DenseTensor<float> ElementWiseMultiply(this DenseTensor<float> tensor1, DenseTensor<float> tensor2)
     {
         var resultData = new float[tensor1.Length];
@@ -79,6 +102,13 @@ public static class OnnxExtensions
         return new DenseTensor<float>(resultData, tensor1.Dimensions);
     }
 
+    /// <summary>
+    /// Computes the sum of tensor elements over specified dimensions.
+    /// </summary>
+    /// <param name="input">The input tensor.</param>
+    /// <param name="dim">The dimension to sum along. If null, sums all elements.</param>
+    /// <param name="keepdim">Whether to keep the reduced dimension in the output.</param>
+    /// <returns>A new tensor containing the sum.</returns>
     public static DenseTensor<float> Sum(this DenseTensor<float> input, int? dim = null, bool keepdim = false)
     {
         if (dim == null || !dim.HasValue)
@@ -151,6 +181,13 @@ public static class OnnxExtensions
         return index;
     }
 
+    /// <summary>
+    /// Clamps all elements in the tensor to be within a specified range.
+    /// </summary>
+    /// <param name="input">The input tensor.</param>
+    /// <param name="min">The minimum value.</param>
+    /// <param name="max">The maximum value.</param>
+    /// <returns>A new tensor with values clamped to the specified range.</returns>
     public static DenseTensor<float> Clamp(this DenseTensor<float> input, float min = float.MinValue, float max = float.MaxValue)
     {
         var resultData = new float[input.Length];
@@ -163,6 +200,12 @@ public static class OnnxExtensions
         return new DenseTensor<float>(resultData, input.Dimensions);
     }
 
+    /// <summary>
+    /// Performs element-wise division of two tensors.
+    /// </summary>
+    /// <param name="tensor1">The numerator tensor.</param>
+    /// <param name="tensor2">The denominator tensor.</param>
+    /// <returns>A new tensor containing the element-wise quotient.</returns>
     public static DenseTensor<float> ElementWiseDivide(this DenseTensor<float> tensor1, DenseTensor<float> tensor2)
     {
         var resultData = new float[tensor1.Length];
@@ -175,6 +218,13 @@ public static class OnnxExtensions
         return new DenseTensor<float>(resultData, tensor1.Dimensions);
     }
 
+    /// <summary>
+    /// Normalizes the tensor along the specified dimension using the p-norm.
+    /// </summary>
+    /// <param name="input">The input tensor.</param>
+    /// <param name="p">The norm degree (e.g., 2 for L2 normalization).</param>
+    /// <param name="dim">The dimension along which to normalize.</param>
+    /// <returns>A new normalized tensor.</returns>
     public static DenseTensor<float> Normalize(this DenseTensor<float> input, int p, int dim)
     {
         var normalizedData = new float[input.Length];

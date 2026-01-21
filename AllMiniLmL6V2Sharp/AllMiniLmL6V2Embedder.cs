@@ -91,7 +91,7 @@ public class AllMiniLmL6V2Embedder : IEmbedder, IDisposable
     /// <summary>
     /// Generates an embedding array for the given sentances.
     /// </summary>
-    /// <param name="sentence">Text to embed.</param>
+    /// <param name="sentences">Text to embed.</param>
     /// <returns>An enumerable of embeddings.</returns>
     public IEnumerable<IEnumerable<float>> GenerateEmbeddings(IEnumerable<string> sentences)
     {
@@ -239,6 +239,10 @@ public class AllMiniLmL6V2Embedder : IEmbedder, IDisposable
         return tokenTensor;
     }
 
+    /// <summary>
+    /// Disposes the managed and unmanaged resources.
+    /// </summary>
+    /// <param name="disposing">True to dispose managed resources.</param>
     protected virtual void Dispose(bool disposing)
     {
         if (!disposedValue)
@@ -253,6 +257,9 @@ public class AllMiniLmL6V2Embedder : IEmbedder, IDisposable
         }
     }
 
+    /// <summary>
+    /// Disposes the managed resources used by this embedder.
+    /// </summary>
     public void Dispose()
     {
         // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method

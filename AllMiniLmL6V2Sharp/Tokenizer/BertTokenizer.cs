@@ -3,12 +3,22 @@ using System.Linq;
 
 namespace OoBDev.AllMiniLmL6V2Sharp.Tokenizer;
 
+/// <summary>
+/// BERT tokenizer for converting text into tokens.
+/// </summary>
 public class BertTokenizer : ITokenizer
 {
     private readonly IDictionary<string, int> _vocab;
     private readonly BasicTokenizer _basicTokenizer;
     private readonly WordpieceTokenizer _wordpieceTokenizer;
     private readonly IDictionary<int, string> _invVocab;
+    /// <summary>
+    /// Initializes a new instance of the BERT tokenizer.
+    /// </summary>
+    /// <param name="vocabFile">Path to the vocabulary file.</param>
+    /// <param name="isLowerCase">Whether to convert text to lowercase.</param>
+    /// <param name="unknownToken">Token to use for unknown words.</param>
+    /// <param name="maxInputCharsPerWord">Maximum characters per word.</param>
     public BertTokenizer(string vocabFile, bool isLowerCase = true, string unknownToken = Tokens.UNKNOWN_TOKEN, int maxInputCharsPerWord = 200) 
     {
         _vocab = VocabLoader.Load(vocabFile);
@@ -21,6 +31,11 @@ public class BertTokenizer : ITokenizer
         _wordpieceTokenizer = new WordpieceTokenizer(_vocab, unknownToken, maxInputCharsPerWord);
     }
 
+    /// <summary>
+    /// Tokenizes the input text into a sequence of tokens.
+    /// </summary>
+    /// <param name="text">The text to tokenize.</param>
+    /// <returns>An enumerable of tokens.</returns>
     public IEnumerable<Token> Tokenize(string text)
     {
         List<Token> outputTokens = new List<Token>()
@@ -48,6 +63,12 @@ public class BertTokenizer : ITokenizer
         return outputTokens;
     }
 
+    /// <summary>
+    /// Encodes the text into a fixed-length sequence of encoded tokens.
+    /// </summary>
+    /// <param name="sequenceLength">The desired sequence length.</param>
+    /// <param name="text">The text to encode.</param>
+    /// <returns>An enumerable of encoded tokens with padding.</returns>
     public IEnumerable<EncodedToken> Encode(int sequenceLength, string text)
     {
         IEnumerable<Token> tokens = Tokenize(text);

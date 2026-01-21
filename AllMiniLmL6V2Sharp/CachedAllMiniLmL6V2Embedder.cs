@@ -9,6 +9,9 @@ using OoBDev.AllMiniLmL6V2Sharp.Tokenizer;
 
 namespace OoBDev.AllMiniLmL6V2Sharp;
 
+/// <summary>
+/// Cached implementation of the All-MiniLM-L6-v2 embedder for improved performance.
+/// </summary>
 public class CachedAllMiniLmL6V2Embedder : IEmbedder, IDisposable
 {
     private readonly RunOptions _runOptions;
@@ -98,11 +101,16 @@ public class CachedAllMiniLmL6V2Embedder : IEmbedder, IDisposable
     /// <summary>
     /// Generates an embedding array for the given sentences.
     /// </summary>
-    /// <param name="sentence">Text to embed.</param>
+    /// <param name="sentences">Text to embed.</param>
     /// <returns>An enumerable of embeddings.</returns>
     public IEnumerable<IEnumerable<float>> GenerateEmbeddings(IEnumerable<string> sentences) =>
         GenerateEmbeddingsInternal(sentences).ToArray();
 
+    /// <summary>
+    /// Asynchronously generates embeddings for multiple sentences in parallel.
+    /// </summary>
+    /// <param name="sentences">The collection of sentences to embed.</param>
+    /// <returns>An async enumerable of sentence-embedding pairs.</returns>
     public async IAsyncEnumerable<(string sentence, float[] embedding)> GenerateEmbeddingsAsync(IEnumerable<string> sentences)
     {
         var tasks = sentences.AsParallel()
@@ -178,6 +186,9 @@ public class CachedAllMiniLmL6V2Embedder : IEmbedder, IDisposable
         return tokenTensor;
     }
 
+    /// <summary>
+    /// Disposes the managed resources used by this embedder.
+    /// </summary>
     public void Dispose()
     {
         // Dispose of unmanaged resources.
@@ -186,6 +197,10 @@ public class CachedAllMiniLmL6V2Embedder : IEmbedder, IDisposable
         GC.SuppressFinalize(this);
     }
     private bool _disposed = false;
+    /// <summary>
+    /// Disposes the managed and unmanaged resources.
+    /// </summary>
+    /// <param name="disposing">True to dispose managed resources.</param>
     protected virtual void Dispose(bool disposing)
     {
         if (_disposed)
@@ -202,5 +217,8 @@ public class CachedAllMiniLmL6V2Embedder : IEmbedder, IDisposable
         _disposed = true;
     }
 
+    /// <summary>
+    /// Finalizer to ensure resources are released.
+    /// </summary>
     ~CachedAllMiniLmL6V2Embedder() => Dispose(false);
 }
