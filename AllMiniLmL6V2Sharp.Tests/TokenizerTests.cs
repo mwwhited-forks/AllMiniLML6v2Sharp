@@ -1,5 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using OoBDev.AllMiniLmL6V2Sharp.Tokenizer;
+﻿using OoBDev.AllMiniLmL6V2Sharp.Tokenizer;
 using OoBDev.TestUtilities;
 
 namespace OoBDev.AllMiniLmL6V2Sharp.Tests;

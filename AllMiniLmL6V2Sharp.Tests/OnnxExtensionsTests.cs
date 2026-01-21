@@ -1,5 +1,4 @@
 ﻿using Microsoft.ML.OnnxRuntime.Tensors;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OoBDev.TestUtilities;
 
 namespace OoBDev.AllMiniLmL6V2Sharp.Tests;

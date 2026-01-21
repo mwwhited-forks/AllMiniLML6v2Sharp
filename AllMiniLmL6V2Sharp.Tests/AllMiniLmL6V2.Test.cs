@@ -1,5 +1,4 @@
 ﻿using Microsoft.ML.OnnxRuntime;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OoBDev.TestUtilities;
 
 namespace OoBDev.AllMiniLmL6V2Sharp.Tests;
