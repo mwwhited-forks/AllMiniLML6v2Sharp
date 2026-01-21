@@ -19,11 +19,8 @@
     </PackageReference>
     <PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.23.2" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
-    <PackageReference Include="xunit" Version="2.9.3" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
+    <PackageReference Include="MSTest.TestAdapter" Version="4.0.2" />
+    <PackageReference Include="MSTest.TestFramework" Version="4.0.2" />
     <PackageReference Include="coverlet.collector" Version="6.0.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -32,6 +29,18 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AllMiniLmL6V2Sharp\AllMiniLmL6V2Sharp.csproj" />
+    <ProjectReference Include="..\..\..\Framework\OoBDev.TestUtilities\OoBDev.TestUtilities.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\SBert\OoBDev.SBert.AllMiniLML6v2Sharp\bin\$(Configuration)\net10.0\model\model.onnx">
+      <Link>model\model.onnx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\SBert\OoBDev.SBert.AllMiniLML6v2Sharp\bin\$(Configuration)\net10.0\model\vocab.txt">
+      <Link>model\vocab.txt</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
