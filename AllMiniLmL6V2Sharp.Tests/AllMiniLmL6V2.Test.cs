@@ -86,7 +86,7 @@ public class AllMiniLmL6V2Tests
         Assert.IsNotNull(embedding);
         Assert.IsTrue(embedding.Any());
         Assert.IsNotNull(embeddings);
-        Assert.IsTrue(embeddings.Count() > 0);
+        Assert.IsGreaterThan(0, embeddings.Count());
         Assert.AreEqual(sentences.Length, embeddings.Count());
 
         for (var i = 0; i < sentences.Length; i++)

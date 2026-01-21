@@ -15,6 +15,6 @@ public class VocabTests
     {
         var vocab = VocabLoader.Load(vocabPath);
         Assert.IsNotNull(vocab);
-        Assert.IsTrue(vocab.Count > 0);
+        Assert.IsNotEmpty(vocab);
     }
 }

@@ -9,7 +9,7 @@ public class TokenizerTests
 {
     private const string vocabPath = "./model/vocab.txt";
 
-    [DataTestMethod]
+    [TestMethod]
     [TestCategory(TestCategories.Simulate)]
     [DataRow("This is an example sentence")]
     [DataRow("Hello World!")]
