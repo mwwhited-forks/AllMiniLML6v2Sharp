@@ -18,7 +18,7 @@ internal class WordpieceTokenizer : BaseTokenizer
 
     public override IEnumerable<string> Tokenize(string text)
     {
-        List<string> output = new List<string>();
+        List<string> output = [];
         foreach(var token in WhitespaceTokenize(text))
         {
             if (token.Length > _maxInputCharsPerWord)
@@ -29,7 +29,7 @@ internal class WordpieceTokenizer : BaseTokenizer
 
             var isBad = false;
             var start = 0;
-            List<string> subTokens = new List<string>();
+            List<string> subTokens = [];
             while(start < token.Length)
             {
                 var end = token.Length;

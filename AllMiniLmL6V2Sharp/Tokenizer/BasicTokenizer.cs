@@ -18,7 +18,7 @@ internal class BasicTokenizer : BaseTokenizer
         var cleanedText = CleanText(text);
         var cleanedChineseText = TokenizeChineseChars(cleanedText);
         IEnumerable<string> cleanedWhitespace = WhitespaceTokenize(cleanedChineseText);
-        List<string> splitTokens = new List<string>();
+        List<string> splitTokens = [];
         foreach (var word in cleanedWhitespace)
         {
             var token = word;
@@ -116,7 +116,7 @@ internal class BasicTokenizer : BaseTokenizer
     {
         var i = 0;
         var isStartOfNewWord = true;
-        List<StringBuilder> output = new List<StringBuilder>();
+        List<StringBuilder> output = [];
         while(i < text.Length)
         {
             var c = text[i];

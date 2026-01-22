@@ -38,10 +38,10 @@ public class BertTokenizer : ITokenizer
     /// <returns>An enumerable of tokens.</returns>
     public IEnumerable<Token> Tokenize(string text)
     {
-        List<Token> outputTokens = new List<Token>()
-        {
+        List<Token> outputTokens =
+        [
             new(Tokens.CLS_TOKEN, 0, _vocab[Tokens.CLS_TOKEN])
-        };
+        ];
 
         var segmentIndex = 0;
         foreach (var token in _basicTokenizer.Tokenize(text))

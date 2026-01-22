@@ -157,7 +157,7 @@ public class AllMiniLmL6V2Embedder : IEmbedder, IDisposable
 
     private float[][] MultiplePostProcess(OrtValue modelOutput, OrtValue attentionMask)
     {
-        List<float[]> results = new List<float[]>();
+        List<float[]> results = [];
         var output = modelOutput.GetTensorDataAsSpan<float>().ToArray();
         int[] dimensions = [.. modelOutput.GetTensorTypeAndShape().Shape.Select(s => (int)s)];
         dimensions[0] = 1; // Since only processing 1 row at a time, set to 1. 
