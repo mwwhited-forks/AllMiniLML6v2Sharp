@@ -8,10 +8,7 @@ namespace OoBDev.AllMiniLmL6V2Sharp.Tokenizer;
 internal class BasicTokenizer : BaseTokenizer
 {
     private readonly bool IsLowerCase = true;
-    public BasicTokenizer(bool isLowerCase)
-    {
-        IsLowerCase = isLowerCase;
-    }
+    public BasicTokenizer(bool isLowerCase) => IsLowerCase = isLowerCase;
 
     public override IEnumerable<string> Tokenize(string text)
     {
